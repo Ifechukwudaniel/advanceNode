@@ -4,7 +4,9 @@ const util = require("util")
 const redis = require("redis")
 const redisUrl = "redis://127.0.0.1:6379"
 const redisClient = redis.createClient(redisUrl)
-redisClient.get=  util.promisify(redisClient.get)
+redisClient.get=  util.promisify(redisClient.get);
+
+
 
 
 const Blog = mongoose.model('Blog');
@@ -23,7 +25,7 @@ module.exports = app => {
     const userBlogs = redisClient.get(req.user.id)
      userBlogs.then(async(blogs)=>{
        if(blogs)
-          return res.send(blogs);
+          return res.send(JSON.parse(blogs));
        let newBlogs = await Blog.find({ _user: req.user.id });
        redisClient.set(req.user.id,JSON.stringify(newBlogs))
        return res.send(newBlogs)

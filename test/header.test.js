@@ -26,7 +26,7 @@ test('clicking login has oauth flow', async () => {
      const url = page.url()
      expect(url).toMatch(/accounts\.google\.com/)
 })
-test.only('When signed in,has logout button',  async() => {
+test('When signed in,has logout button',  async() => {
  const userId = '5d78249787c5f5cc646c08f5'
  const Buffer = require("safe-buffer").Buffer
  const keyGrip = require('keygrip')

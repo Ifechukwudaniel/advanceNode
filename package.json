@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "jest": {
-    "verbose": true,
     "testURL": "http://localhost"
   },
   "scripts": {

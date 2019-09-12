@@ -2,7 +2,9 @@
  let browser , page
  const url = "http://localhost:3000"
 
+
  beforeEach( async ()=>{
+    jest.setTimeout(100000)
     browser =  await puppeteer.launch({
         headless:false
     })
@@ -17,7 +19,7 @@
 test('The header has the correct text', async () => {
     const text = await page.$eval("a.left.brand-logo", el=> el.innerHTML)
     expect(text).toEqual('Blogster')
-}, 100000)
+})
 
 test('clicking login has oauth flow', async () => {
      await page.click((".right a"))
@@ -41,5 +43,8 @@ test.only('When signed in,has logout button',  async() => {
   await page.setCookie({ name:'session', value: sessionString})
   await page.setCookie({name: 'session.sig', value:sign })
   await page.goto(url)
-
-}, 100000)
+  await page.waitFor('a[href="/auth/logout"]')
+  const logoutText=  await page.$eval('a[href="/auth/logout"]', el=>el.innerHTML)
+  console.warn(logoutText)
+  expect(logoutText).toEqual("Logout")
+})

@@ -1,21 +1,14 @@
- const puppeteer = require('puppeteer')
- let browser , page
- const url = "http://localhost:3000"
- const sessionFactory = require("./factories/sessionFactories")
- const userFactory = require("./factories/userFactories")
-
-
+const Page = require("./helper/Page")
+let  page
+const url = "http://localhost:3000"
  beforeEach( async ()=>{
     jest.setTimeout(100000)
-    browser =  await puppeteer.launch({
-        headless:false
-    })
-    page = await browser.newPage()
+    page = await Page.build()
     await page.goto(url)
  })
 
  afterEach( async ()=>{
-   await browser.close()
+   await page.close()
  })
 
 test('The header has the correct text', async () => {
@@ -31,12 +24,7 @@ test('clicking login has oauth flow', async () => {
 
 
 test('When signed in,has logout button',  async() => {
-  const newUser = await userFactory()
-  const { session , sign} = sessionFactory(newUser)
-  await page.setCookie({ name:'session', value: session})
-  await page.setCookie({name: 'session.sig', value:sign })
-  await page.goto(url)
-  await page.waitFor('a[href="/auth/logout"]')
+  await page.login()  
   const logoutText=  await page.$eval('a[href="/auth/logout"]', el=>el.innerHTML)
   expect(logoutText).toEqual("Logout")
 })

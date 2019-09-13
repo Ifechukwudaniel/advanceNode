@@ -12,7 +12,7 @@ const url = "http://localhost:3000"
  })
 
 test('The header has the correct text', async () => {
-    const text = await page.$eval("a.left.brand-logo", el=> el.innerHTML)
+    const text = await page.getContentOf("a.left.brand-logo")
     expect(text).toEqual('Blogster')
 })
 
@@ -25,6 +25,6 @@ test('clicking login has oauth flow', async () => {
 
 test('When signed in,has logout button',  async() => {
   await page.login()  
-  const logoutText=  await page.$eval('a[href="/auth/logout"]', el=>el.innerHTML)
+  const logoutText=  await page.getContentOf('a[href="/auth/logout"]')
   expect(logoutText).toEqual("Logout")
 })

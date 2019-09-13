@@ -23,8 +23,23 @@ describe('When logedin   is true',  async () => {
     })
     
     describe(' When using valid Form input', () => {
-        test('The form does not show error message ', () => {
-          
+        beforeEach( async ()=>{
+            await page.type(".title input", "My Title")
+            await page.type(".content input", "My content")
+            await page.click("form button")
+        }) 
+        test('The form Should confirm submit', async () => {
+            const confirmText=  await page.getContentOf("h5")
+            expect(confirmText).toEqual("Please confirm your entries")
+        })
+        
+        test('The form Should submit blog', async() => {
+            await page.click("button.green")
+            await page.waitFor(".card")
+            const title =  await page.getContentOf("span.card-title")
+            const  contentText =  await page.getContentOf(".card-content p")
+            expect(title).toEqual("My Title")
+            expect(contentText).toEqual("My content")
         })
         
     });

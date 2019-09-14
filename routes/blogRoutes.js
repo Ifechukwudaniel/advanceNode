@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
+const cleanCache =  require("../middlewares/cleanCache")
 
 const Blog = mongoose.model('Blog');
 
@@ -12,22 +13,22 @@ module.exports = app => {
 
     res.send(blog);
   });
-
+ // get user post
   app.get('/api/blogs', requireLogin, async (req, res) => {
-    const blogs = await Blog.find({ _user: req.user.id });
-
-    res.send(blogs);
+    let newBlogs = await Blog.find({ _user: req.user.id })
+    .cache({key: req.user.id});
+    return res.send(newBlogs)
   });
 
-  app.post('/api/blogs', requireLogin, async (req, res) => {
+  // create a new blog 
+  app.post('/api/blogs', requireLogin, cleanCache,  async (req, res) => {
     const { title, content } = req.body;
-
     const blog = new Blog({
       title,
       content,
       _user: req.user.id
     });
-
+   if (!title|| !content) return res.send(400, {error: "Please put all the parameter"})
     try {
       await blog.save();
       res.send(blog);

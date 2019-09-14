@@ -11,7 +11,7 @@ afterEach( async ()=>{
    page.close()
 })
 
-describe('When logedin   is true',  async () => {
+describe('When logged in   is true',  async () => {
     beforeEach(async ()=>{
         await page.login()
         await  page.click('.btn-floating.btn-large.red')
@@ -58,7 +58,7 @@ describe('When logedin   is true',  async () => {
     });
 });
 
-describe(' When user is not login', () => {
+describe('When user is not login', () => {
     test('Should not be able to create Post',async () => {
      const result = await page.evaluate(
      ()=>{
@@ -73,4 +73,19 @@ describe(' When user is not login', () => {
      )
       expect(result).toEqual({error:'You must log in!'})
     })
+
+    test('should  not be able to get post', async () => {
+      const result = await page.evaluate(
+          ()=>{
+              return fetch("/api/blogs", {
+                method:'GET',
+                credentials:"same-origin",
+                headers:{"Content-type": "application/json"},
+             })
+             .then(res=>res.json())
+          }
+      )
+       expect(result).toEqual({error:'You must log in!'})
+    })
+    
 });

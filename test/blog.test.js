@@ -57,3 +57,20 @@ describe('When logedin   is true',  async () => {
          
     });
 });
+
+describe(' When user is not login', () => {
+    test('Should not be able to create Post',async () => {
+     const result = await page.evaluate(
+     ()=>{
+         return fetch("/api/blogs", {
+            method:"POST",
+            credentials:"same-origin",
+            headers:{"Content-type": "application/json"},
+            body:JSON.stringify({title:"My Title", content:"my  content"})
+        })
+        .then(res=>res.json())
+     }
+     )
+      expect(result).toEqual({error:'You must log in!'})
+    })
+});
